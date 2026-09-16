@@ -1,59 +1,2975 @@
 <!DOCTYPE html>
-
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MiniPoki V2</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GameZone - Juegos Online</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #0f172a;
+    color: white;
+    min-height: 100vh;
+}
+
+header {
+    background: linear-gradient(135deg, #7c3aed, #2563eb);
+    padding: 25px 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.35);
+}
+
+.header-inner {
+    max-width: 1200px;
+    margin: auto;
+}
+
+.logo {
+    font-size: 32px;
+    font-weight: 900;
+    margin-bottom: 15px;
+}
+
+.logo span {
+    color: #facc15;
+}
+
+.subtitle {
+    opacity: .9;
+    margin-bottom: 20px;
+}
+
+.search {
+    width: 100%;
+    max-width: 600px;
+    padding: 15px 18px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    outline: none;
+}
+
+nav {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 15px;
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+}
+
+.category {
+    border: none;
+    padding: 11px 18px;
+    border-radius: 20px;
+    background: #1e293b;
+    color: white;
+    cursor: pointer;
+    white-space: nowrap;
+    font-weight: bold;
+}
+
+.category:hover,
+.category.active {
+    background: #7c3aed;
+}
+
+main {
+    max-width: 1200px;
+    margin: auto;
+    padding: 0 15px 50px;
+}
+
+.section-title {
+    font-size: 25px;
+    margin: 25px 0 18px;
+}
+
+.games {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 18px;
+}
+
+.card {
+    background: #1e293b;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: .2s;
+    position: relative;
+    border: 1px solid #334155;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(0,0,0,.35);
+}
+
+.game-image {
+    height: 145px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 65px;
+}
+
+.game-info {
+    padding: 14px;
+}
+
+.game-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.game-category {
+    color: #94a3b8;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.favorite {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(0,0,0,.55);
+    color: white;
+    cursor: pointer;
+    font-size: 18px;
+    z-index: 2;
+}
+
+.favorite.active {
+    color: #ef4444;
+}
+
+.empty {
+    text-align: center;
+    padding: 50px;
+    color: #94a3b8;
+}
+
+/* MODAL */
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.8);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+}
+
+.modal.open {
+    display: flex;
+}
+
+.modal-box {
+    width: 100%;
+    max-width: 850px;
+    max-height: 95vh;
+    overflow: auto;
+    background: #111827;
+    border-radius: 18px;
+    padding: 20px;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    right: 15px;
+    top: 12px;
+    border: none;
+    background: #ef4444;
+    color: white;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+#gameTitle {
+    margin-bottom: 15px;
+}
+
+.game-area {
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #020617;
+    border-radius: 15px;
+    padding: 20px;
+}
+
+button.game-btn {
+    border: none;
+    background: #7c3aed;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 5px;
+}
+
+button.game-btn:hover {
+    background: #8b5cf6;
+}
+
+.big-number {
+    font-size: 60px;
+    font-weight: bold;
+    margin: 20px;
+}
+
+.score {
+    font-size: 24px;
+    margin: 10px;
+}
+
+canvas {
+    max-width: 100%;
+    background: #020617;
+    border-radius: 10px;
+}
+
+.memory-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 70px);
+    gap: 8px;
+}
+
+.memory-card {
+    width: 70px;
+    height: 70px;
+    border: none;
+    background: #334155;
+    border-radius: 10px;
+    font-size: 28px;
+    cursor: pointer;
+    color: white;
+}
+
+.memory-card.revealed {
+    background: #7c3aed;
+}
+
+.number-input {
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    font-size: 18px;
+    width: 180px;
+    text-align: center;
+}
+
+.ttt {
+    display: grid;
+    grid-template-columns: repeat(3, 90px);
+    gap: 7px;
+}
+
+.ttt button {
+    width: 90px;
+    height: 90px;
+    border: none;
+    border-radius: 10px;
+    background: #334155;
+    color: white;
+    font-size: 35px;
+    cursor: pointer;
+}
+
+footer {
+    text-align: center;
+    padding: 30px;
+    color: #64748b;
+}
+
+@media(max-width:600px) {
+    .logo {
+        font-size: 26px;
+    }
+
+    .games {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .game-image {
+        height: 110px;
+        font-size: 50px;
+    }
+
+    .game-title {
+        font-size: 15px;
+    }
+
+    .memory-grid {
+        grid-template-columns: repeat(4, 55px);
+    }
+
+    .memory-card {
+        width: 55px;
+        height: 55px;
+    }
+}
+</style>
 </head>
 
 <body>
 
 <header>
-  <div class="logo">🎮 MiniPoki</div>
+    <div class="header-inner">
+        <div class="logo">🎮 Game<span>Zone</span></div>
+        <div class="subtitle">Juega gratis directamente desde tu navegador</div>
 
-<input
-id="search"
-type="text"
-placeholder="🔎 Buscar juegos..."
-autocomplete="off"
-
->
-
+        <input
+            id="search"
+            class="search"
+            type="text"
+            placeholder="🔎 Buscar juegos..."
+        >
+    </div>
 </header>
 
 <nav>
-  <button class="category active" data-category="all">🎮 Todos</button>
-  <button class="category" data-category="arcade">👾 Arcade</button>
-  <button class="category" data-category="puzzle">🧩 Puzzle</button>
-  <button class="category" data-category="sports">⚽ Deportes</button>
-  <button class="category" data-category="action">🔥 Acción</button>
-  <button class="category" data-category="favorites">⭐ Favoritos</button>
+    <button class="category active" data-category="Todos">Todos</button>
+    <button class="category" data-category="Arcade">🕹️ Arcade</button>
+    <button class="category" data-category="Puzzle">🧩 Puzzle</button>
+    <button class="category" data-category="Deportes">⚽ Deportes</button>
+    <button class="category" data-category="Accion">🔥 Acción</button>
+    <button class="category" data-category="Favoritos">❤️ Favoritos</button>
 </nav>
 
 <main>
-  <h1>Juegos</h1>
-  <div id="games" class="games"></div>
+
+    <h2 class="section-title">🎮 Juegos</h2>
+
+    <div id="games" class="games"></div>
+
 </main>
 
-<div id="gameModal" class="modal hidden">
+<footer>
+    GameZone © 2026 · Juegos web
+</footer>
 
-  <div class="modal-content">
+<!-- MODAL DEL JUEGO -->
 
-```
-<button id="closeGame" class="close">✕</button>
+<div id="modal" class="modal">
+    <div class="modal-box">
 
-<h2 id="gameTitle"></h2>
+        <button id="close" class="close">×</button>
 
-<div id="gameArea"></div>
-```
+        <h2 id="gameTitle">Juego</h2>
 
-  </div>
+        <div id="gameArea" class="game-area"></div>
 
+    </div>
 </div>
 
-<script src="script.js"></script>
+<script>
+
+/* =========================================
+   DATOS DE LOS JUEGOS
+========================================= */
+
+const games = [
+
+    {
+        id: "clicker",
+        name: "Clicker",
+        category: "Arcade",
+        icon: "👆",
+        color: "linear-gradient(135deg,#f97316,#ef4444)"
+    },
+
+    {
+        id: "reaction",
+        name: "Reflejos",
+        category: "Arcade",
+        icon: "⚡",
+        color: "linear-gradient(135deg,#eab308,#f97316)"
+    },
+
+    {
+        id: "memory",
+        name: "Memoria",
+        category: "Puzzle",
+        icon: "🧠",
+        color: "linear-gradient(135deg,#8b5cf6,#ec4899)"
+    },
+
+    {
+        id: "number",
+        name: "Adivina el número",
+        category: "Puzzle",
+        icon: "🔢",
+        color: "linear-gradient(135deg,#06b6d4,#2563eb)"
+    },
+
+    {
+        id: "basket",
+        name: "Basket",
+        category: "Deportes",
+        icon: "🏀",
+        color: "linear-gradient(135deg,#f97316,#ea580c)"
+    },
+
+    {
+        id: "football",
+        name: "Fútbol",
+        category: "Deportes",
+        icon: "⚽",
+        color: "linear-gradient(135deg,#22c55e,#15803d)"
+    },
+
+    {
+        id: "snake",
+        name: "Snake",
+        category: "Arcade",
+        icon: "🐍",
+        color: "linear-gradient(135deg,#22c55e,#166534)"
+    },
+
+    {
+        id: "pong",
+        name: "Pong",
+        category: "Arcade",
+        icon: "🏓",
+        color: "linear-gradient(135deg,#6366f1,#4338ca)"
+    },
+
+    {
+        id: "breakout",
+        name: "Breakout",
+        category: "Arcade",
+        icon: "🧱",
+        color: "linear-gradient(135deg,#ec4899,#be185d)"
+    },
+
+    {
+        id: "tetris",
+        name: "Tetris Mini",
+        category: "Puzzle",
+        icon: "🟦",
+        color: "linear-gradient(135deg,#06b6d4,#0891b2)"
+    },
+
+    {
+        id: "dodge",
+        name: "Esquiva",
+        category: "Accion",
+        icon: "💥",
+        color: "linear-gradient(135deg,#ef4444,#991b1b)"
+    },
+
+    {
+        id: "space",
+        name: "Nave Espacial",
+        category: "Accion",
+        icon: "🚀",
+        color: "linear-gradient(135deg,#312e81,#111827)"
+    },
+
+    {
+        id: "stars",
+        name: "Atrapa Estrellas",
+        category: "Arcade",
+        icon: "⭐",
+        color: "linear-gradient(135deg,#eab308,#f59e0b)"
+    },
+
+    {
+        id: "game2048",
+        name: "2048 Mini",
+        category: "Puzzle",
+        icon: "🔲",
+        color: "linear-gradient(135deg,#f59e0b,#d97706)"
+    },
+
+    {
+        id: "ttt",
+        name: "Tres en Raya",
+        category: "Puzzle",
+        icon: "❌",
+        color: "linear-gradient(135deg,#3b82f6,#7c3aed)"
+    }
+
+];
+
+
+/* =========================================
+   ELEMENTOS
+========================================= */
+
+const gamesContainer = document.getElementById("games");
+const searchInput = document.getElementById("search");
+const modal = document.getElementById("modal");
+const gameTitle = document.getElementById("gameTitle");
+const gameArea = document.getElementById("gameArea");
+const closeButton = document.getElementById("close");
+
+let currentCategory = "Todos";
+let cleanupGame = null;
+
+
+/* =========================================
+   FAVORITOS
+========================================= */
+
+let favorites =
+    JSON.parse(localStorage.getItem("gamezoneFavorites") || "[]");
+
+
+function isFavorite(id) {
+    return favorites.includes(id);
+}
+
+
+function toggleFavorite(id) {
+
+    if (favorites.includes(id)) {
+
+        favorites = favorites.filter(x => x !== id);
+
+    } else {
+
+        favorites.push(id);
+
+    }
+
+    localStorage.setItem(
+        "gamezoneFavorites",
+        JSON.stringify(favorites)
+    );
+
+    renderGames();
+}
+
+
+/* =========================================
+   MOSTRAR JUEGOS
+========================================= */
+
+function renderGames() {
+
+    const search = searchInput.value.toLowerCase().trim();
+
+    const filtered = games.filter(game => {
+
+        const categoryOK =
+            currentCategory === "Todos" ||
+            (currentCategory === "Favoritos"
+                ? isFavorite(game.id)
+                : game.category === currentCategory);
+
+        const searchOK =
+            game.name.toLowerCase().includes(search);
+
+        return categoryOK && searchOK;
+
+    });
+
+
+    gamesContainer.innerHTML = "";
+
+
+    if (filtered.length === 0) {
+
+        gamesContainer.innerHTML = `
+            <div class="empty">
+                <h3>No se encontraron juegos 😢</h3>
+                <p>Prueba con otra búsqueda o categoría.</p>
+            </div>
+        `;
+
+        return;
+    }
+
+
+    filtered.forEach(game => {
+
+        const card = document.createElement("div");
+
+        card.className = "card";
+
+        card.innerHTML = `
+
+            <button class="favorite ${isFavorite(game.id) ? "active" : ""}">
+                ${isFavorite(game.id) ? "❤️" : "♡"}
+            </button>
+
+            <div
+                class="game-image"
+                style="background:${game.color}"
+            >
+                ${game.icon}
+            </div>
+
+            <div class="game-info">
+
+                <div class="game-title">
+                    ${game.name}
+                </div>
+
+                <div class="game-category">
+                    ${game.category}
+                </div>
+
+            </div>
+        `;
+
+
+        card.addEventListener("click", () => {
+            openGame(game.id);
+        });
+
+
+        card.querySelector(".favorite")
+            .addEventListener("click", event => {
+
+                event.stopPropagation();
+
+                toggleFavorite(game.id);
+
+            });
+
+
+        gamesContainer.appendChild(card);
+
+    });
+
+}
+
+
+/* =========================================
+   CATEGORÍAS
+========================================= */
+
+document.querySelectorAll(".category").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        document
+            .querySelectorAll(".category")
+            .forEach(b => b.classList.remove("active"));
+
+        button.classList.add("active");
+
+        currentCategory =
+            button.dataset.category;
+
+        renderGames();
+
+    });
+
+});
+
+
+searchInput.addEventListener("input", renderGames);
+
+
+/* =========================================
+   ABRIR / CERRAR JUEGO
+========================================= */
+
+function openGame(id) {
+
+    const game = games.find(x => x.id === id);
+
+    if (!game) return;
+
+    if (cleanupGame) {
+
+        cleanupGame();
+
+        cleanupGame = null;
+
+    }
+
+    gameTitle.textContent =
+        game.icon + " " + game.name;
+
+    gameArea.innerHTML = "";
+
+    modal.classList.add("open");
+
+    startGame(id);
+
+}
+
+
+function closeGame() {
+
+    if (cleanupGame) {
+
+        cleanupGame();
+
+        cleanupGame = null;
+
+    }
+
+    modal.classList.remove("open");
+
+    gameArea.innerHTML = "";
+
+}
+
+
+closeButton.addEventListener("click", closeGame);
+
+
+modal.addEventListener("click", event => {
+
+    if (event.target === modal) {
+        closeGame();
+    }
+
+});
+
+
+/* =========================================
+   SELECCIONAR JUEGO
+========================================= */
+
+function startGame(id) {
+
+    const functions = {
+
+        clicker: gameClicker,
+        reaction: gameReaction,
+        memory: gameMemory,
+        number: gameNumber,
+        basket: gameBasket,
+        football: gameFootball,
+        snake: gameSnake,
+        pong: gamePong,
+        breakout: gameBreakout,
+        tetris: gameTetris,
+        dodge: gameDodge,
+        space: gameSpace,
+        stars: gameStars,
+        game2048: game2048,
+        ttt: gameTTT
+
+    };
+
+    if (functions[id]) {
+
+        cleanupGame = functions[id]();
+
+    }
+
+}
+
+
+/* =========================================
+   1. CLICKER
+========================================= */
+
+function gameClicker() {
+
+    let score = 0;
+    let time = 10;
+    let timer = null;
+
+    gameArea.innerHTML = `
+
+        <div class="score">
+            Puntos: <span id="clickScore">0</span>
+        </div>
+
+        <div>
+            Tiempo: <span id="clickTime">10</span>s
+        </div>
+
+        <button id="clickButton"
+                class="game-btn"
+                style="font-size:30px;padding:30px">
+            👆 ¡CLICA!
+        </button>
+
+        <p>Consigue tantos clics como puedas.</p>
+    `;
+
+    const button = document.getElementById("clickButton");
+
+    button.addEventListener("click", () => {
+
+        if (time <= 0) return;
+
+        score++;
+
+        document.getElementById("clickScore").textContent =
+            score;
+
+    });
+
+
+    timer = setInterval(() => {
+
+        time--;
+
+        document.getElementById("clickTime").textContent =
+            time;
+
+        if (time <= 0) {
+
+            clearInterval(timer);
+
+            button.disabled = true;
+
+            button.textContent =
+                "🏆 " + score + " puntos";
+
+        }
+
+    }, 1000);
+
+
+    return () => clearInterval(timer);
+
+}
+
+
+/* =========================================
+   2. REFLEJOS
+========================================= */
+
+function gameReaction() {
+
+    let start = null;
+    let timer = null;
+
+    gameArea.innerHTML = `
+
+        <div class="big-number" id="reactionText">
+            Espera...
+        </div>
+
+        <button id="reactionButton"
+                class="game-btn">
+            Preparado
+        </button>
+
+        <p id="reactionResult"></p>
+    `;
+
+    const button =
+        document.getElementById("reactionButton");
+
+    const text =
+        document.getElementById("reactionText");
+
+    const result =
+        document.getElementById("reactionResult");
+
+
+    function startRound() {
+
+        button.disabled = true;
+
+        text.textContent = "🟡";
+
+        const delay =
+            1000 + Math.random() * 3000;
+
+        timer = setTimeout(() => {
+
+            text.textContent = "🟢 ¡AHORA!";
+
+            start = Date.now();
+
+            button.disabled = false;
+
+            button.textContent = "¡CLICA!";
+
+        }, delay);
+
+    }
+
+
+    button.addEventListener("click", () => {
+
+        if (!start) {
+
+            startRound();
+
+            return;
+
+        }
+
+        const ms = Date.now() - start;
+
+        result.textContent =
+            "⚡ Tiempo: " + ms + " ms";
+
+        start = null;
+
+        button.textContent =
+            "Jugar otra vez";
+
+    });
+
+
+    return () => {
+
+        clearTimeout(timer);
+
+    };
+
+}
+
+
+/* =========================================
+   3. MEMORIA
+========================================= */
+
+function gameMemory() {
+
+    const symbols = [
+        "🍎","🍎",
+        "🚀","🚀",
+        "⚽","⚽",
+        "🐱","🐱",
+        "⭐","⭐",
+        "🔥","🔥",
+        "🎮","🎮",
+        "🍕","🍕"
+    ].sort(() => Math.random() - .5);
+
+
+    gameArea.innerHTML = `
+        <div class="memory-grid" id="memoryGrid"></div>
+        <p id="memoryMessage" style="margin-top:15px">
+            Encuentra todas las parejas.
+        </p>
+    `;
+
+
+    const grid =
+        document.getElementById("memoryGrid");
+
+    let first = null;
+    let second = null;
+    let locked = false;
+    let pairs = 0;
+
+
+    symbols.forEach((symbol, index) => {
+
+        const button =
+            document.createElement("button");
+
+        button.className = "memory-card";
+
+        button.textContent = "?";
+
+        button.dataset.symbol = symbol;
+
+        button.addEventListener("click", () => {
+
+            if (
+                locked ||
+                button === first ||
+                button.classList.contains("matched")
+            ) return;
+
+
+            button.textContent = symbol;
+
+            button.classList.add("revealed");
+
+
+            if (!first) {
+
+                first = button;
+
+                return;
+
+            }
+
+
+            second = button;
+
+            locked = true;
+
+
+            if (
+                first.dataset.symbol ===
+                second.dataset.symbol
+            ) {
+
+                first.classList.add("matched");
+                second.classList.add("matched");
+
+                pairs++;
+
+                first = null;
+                second = null;
+                locked = false;
+
+
+                if (pairs === symbols.length / 2) {
+
+                    document.getElementById(
+                        "memoryMessage"
+                    ).textContent =
+                        "🏆 ¡Has encontrado todas las parejas!";
+
+                }
+
+            } else {
+
+                setTimeout(() => {
+
+                    first.textContent = "?";
+                    second.textContent = "?";
+
+                    first.classList.remove("revealed");
+                    second.classList.remove("revealed");
+
+                    first = null;
+                    second = null;
+
+                    locked = false;
+
+                }, 700);
+
+            }
+
+        });
+
+
+        grid.appendChild(button);
+
+    });
+
+
+    return () => {};
+
+}
+
+
+/* =========================================
+   4. ADIVINA EL NÚMERO
+========================================= */
+
+function gameNumber() {
+
+    const secret =
+        Math.floor(Math.random() * 100) + 1;
+
+    let attempts = 0;
+
+    gameArea.innerHTML = `
+
+        <p>Adivina un número entre 1 y 100.</p>
+
+        <input
+            id="numberInput"
+            class="number-input"
+            type="number"
+            min="1"
+            max="100"
+            placeholder="Número"
+        >
+
+        <button id="numberButton"
+                class="game-btn">
+            Comprobar
+        </button>
+
+        <div id="numberMessage"
+             style="margin-top:15px">
+        </div>
+    `;
+
+
+    const input =
+        document.getElementById("numberInput");
+
+    const button =
+        document.getElementById("numberButton");
+
+    const message =
+        document.getElementById("numberMessage");
+
+
+    button.addEventListener("click", () => {
+
+        const value = Number(input.value);
+
+        if (!value) return;
+
+        attempts++;
+
+
+        if (value === secret) {
+
+            message.innerHTML =
+                "🎉 ¡Correcto! Lo lograste en " +
+                attempts +
+                " intentos.";
+
+            button.disabled = true;
+
+        } else if (value < secret) {
+
+            message.textContent =
+                "⬆️ El número es mayor.";
+
+        } else {
+
+            message.textContent =
+                "⬇️ El número es menor.";
+
+        }
+
+    });
+
+
+    return () => {};
+
+}
+
+
+/* =========================================
+   5. BASKET
+========================================= */
+
+function gameBasket() {
+
+    let score = 0;
+    let shots = 10;
+
+    gameArea.innerHTML = `
+
+        <div class="score">
+            🏀 Canastas:
+            <span id="basketScore">0</span>
+        </div>
+
+        <div>
+            Lanzamientos:
+            <span id="basketShots">10</span>
+        </div>
+
+        <button id="basketButton"
+                class="game-btn"
+                style="font-size:60px">
+            🏀
+        </button>
+
+        <p id="basketMessage">
+            ¡Pulsa para lanzar!
+        </p>
+    `;
+
+
+    const button =
+        document.getElementById("basketButton");
+
+    button.addEventListener("click", () => {
+
+        if (shots <= 0) return;
+
+        shots--;
+
+        const scored =
+            Math.random() < .6;
+
+        if (scored) {
+
+            score++;
+
+            document.getElementById(
+                "basketMessage"
+            ).textContent =
+                "🔥 ¡CANASTA!";
+
+        } else {
+
+            document.getElementById(
+                "basketMessage"
+            ).textContent =
+                "❌ Fallaste";
+
+        }
+
+
+        document.getElementById(
+            "basketScore"
+        ).textContent = score;
+
+        document.getElementById(
+            "basketShots"
+        ).textContent = shots;
+
+
+        if (shots === 0) {
+
+            button.disabled = true;
+
+            document.getElementById(
+                "basketMessage"
+            ).textContent =
+                "🏆 Final: " + score + "/10";
+
+        }
+
+    });
+
+
+    return () => {};
+
+}
+
+
+/* =========================================
+   6. FÚTBOL
+========================================= */
+
+function gameFootball() {
+
+    let score = 0;
+    let shots = 10;
+
+    gameArea.innerHTML = `
+
+        <div class="score">
+            ⚽ Goles:
+            <span id="footballScore">0</span>
+        </div>
+
+        <div>
+            Tiros:
+            <span id="footballShots">10</span>
+        </div>
+
+        <button id="footballButton"
+                class="game-btn"
+                style="font-size:60px">
+            ⚽
+        </button>
+
+        <p id="footballMessage">
+            ¡Chuta!
+        </p>
+    `;
+
+
+    document
+        .getElementById("footballButton")
+        .addEventListener("click", () => {
+
+            if (shots <= 0) return;
+
+            shots--;
+
+            const goal =
+                Math.random() < .5;
+
+
+            if (goal) {
+
+                score++;
+
+                document.getElementById(
+                    "footballMessage"
+                ).textContent =
+                    "⚽ ¡GOOOOOOL!";
+
+            } else {
+
+                document.getElementById(
+                    "footballMessage"
+                ).textContent =
+                    "🧤 ¡El portero la paró!";
+
+            }
+
+
+            document.getElementById(
+                "footballScore"
+            ).textContent = score;
+
+            document.getElementById(
+                "footballShots"
+            ).textContent = shots;
+
+
+            if (shots === 0) {
+
+                document.getElementById(
+                    "footballButton"
+                ).disabled = true;
+
+            }
+
+        });
+
+
+    return () => {};
+
+}
+
+
+/* =========================================
+   7. SNAKE
+========================================= */
+
+function gameSnake() {
+
+    gameArea.innerHTML = `
+        <canvas id="snakeCanvas"
+                width="400"
+                height="400"></canvas>
+
+        <p>Usa las flechas del teclado.</p>
+    `;
+
+
+    const canvas =
+        document.getElementById("snakeCanvas");
+
+    const ctx =
+        canvas.getContext("2d");
+
+
+    const size = 20;
+
+    let snake = [
+        {x: 200, y: 200},
+        {x: 180, y: 200},
+        {x: 160, y: 200}
+    ];
+
+    let food = {
+        x: 300,
+        y: 200
+    };
+
+    let dx = size;
+    let dy = 0;
+
+    let score = 0;
+
+    let timer;
+
+
+    function draw() {
+
+        ctx.fillStyle = "#020617";
+        ctx.fillRect(0,0,400,400);
+
+
+        ctx.fillStyle = "#22c55e";
+
+        snake.forEach(part => {
+
+            ctx.fillRect(
+                part.x,
+                part.y,
+                size - 2,
+                size - 2
+            );
+
+        });
+
+
+        ctx.fillStyle = "#ef4444";
+
+        ctx.fillRect(
+            food.x,
+            food.y,
+            size - 2,
+            size - 2
+        );
+
+    }
+
+
+    function move() {
+
+        const head = {
+            x: snake[0].x + dx,
+            y: snake[0].y + dy
+        };
+
+
+        if (
+            head.x < 0 ||
+            head.x >= 400 ||
+            head.y < 0 ||
+            head.y >= 400 ||
+            snake.some(
+                p =>
+                    p.x === head.x &&
+                    p.y === head.y
+            )
+        ) {
+
+            clearInterval(timer);
+
+            alert("Game Over — puntos: " + score);
+
+            return;
+
+        }
+
+
+        snake.unshift(head);
+
+
+        if (
+            head.x === food.x &&
+            head.y === food.y
+        ) {
+
+            score++;
+
+            food = {
+
+                x: Math.floor(
+                    Math.random() * 20
+                ) * 20,
+
+                y: Math.floor(
+                    Math.random() * 20
+                ) * 20
+
+            };
+
+        } else {
+
+            snake.pop();
+
+        }
+
+
+        draw();
+
+    }
+
+
+    function keydown(event) {
+
+        if (
+            event.key === "ArrowUp" &&
+            dy === 0
+        ) {
+
+            dx = 0;
+            dy = -size;
+
+        }
+
+
+        if (
+            event.key === "ArrowDown" &&
+            dy === 0
+        ) {
+
+            dx = 0;
+            dy = size;
+
+        }
+
+
+        if (
+            event.key === "ArrowLeft" &&
+            dx === 0
+        ) {
+
+            dx = -size;
+            dy = 0;
+
+        }
+
+
+        if (
+            event.key === "ArrowRight" &&
+            dx === 0
+        ) {
+
+            dx = size;
+            dy = 0;
+
+        }
+
+    }
+
+
+    document.addEventListener(
+        "keydown",
+        keydown
+    );
+
+
+    draw();
+
+    timer = setInterval(move, 120);
+
+
+    return () => {
+
+        clearInterval(timer);
+
+        document.removeEventListener(
+            "keydown",
+            keydown
+        );
+
+    };
+
+}
+
+
+/* =========================================
+   8. PONG
+========================================= */
+
+function gamePong() {
+
+    gameArea.innerHTML = `
+        <canvas id="pongCanvas"
+                width="600"
+                height="350"></canvas>
+
+        <p>Usa ↑ y ↓ para mover tu pala.</p>
+    `;
+
+
+    const canvas =
+        document.getElementById("pongCanvas");
+
+    const ctx =
+        canvas.getContext("2d");
+
+
+    let playerY = 140;
+    let enemyY = 140;
+
+    let ballX = 300;
+    let ballY = 175;
+
+    let ballDX = 4;
+    let ballDY = 3;
+
+    let playerScore = 0;
+    let enemyScore = 0;
+
+    let animation;
+
+
+    function draw() {
+
+        ctx.fillStyle = "#020617";
+        ctx.fillRect(0,0,600,350);
+
+
+        ctx.fillStyle = "white";
+
+
+        ctx.fillRect(
+            20,
+            playerY,
+            10,
+            70
+        );
+
+
+        ctx.fillRect(
+            570,
+            enemyY,
+            10,
+            70
+        );
+
+
+        ctx.beginPath();
+
+        ctx.arc(
+            ballX,
+            ballY,
+            8,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+
+
+        ctx.font = "25px Arial";
+
+        ctx.fillText(
+            playerScore,
+            250,
+            40
+        );
+
+        ctx.fillText(
+            enemyScore,
+            340,
+            40
+        );
+
+    }
+
+
+    function update() {
+
+        ballX += ballDX;
+        ballY += ballDY;
+
+
+        if (
+            ballY < 0 ||
+            ballY > 350
+        ) {
+
+            ballDY *= -1;
+
+        }
+
+
+        if (
+            ballX < 35 &&
+            ballY > playerY &&
+            ballY < playerY + 70
+        ) {
+
+            ballDX *= -1;
+
+        }
+
+
+        if (
+            ballX > 555 &&
+            ballY > enemyY &&
+            ballY < enemyY + 70
+        ) {
+
+            ballDX *= -1;
+
+        }
+
+
+        enemyY +=
+            (ballY - (enemyY + 35)) * .04;
+
+
+        if (ballX < 0) {
+
+            enemyScore++;
+
+            resetBall();
+
+        }
+
+
+        if (ballX > 600) {
+
+            playerScore++;
+
+            resetBall();
+
+        }
+
+
+        draw();
+
+        animation =
+            requestAnimationFrame(update);
+
+    }
+
+
+    function resetBall() {
+
+        ballX = 300;
+        ballY = 175;
+
+        ballDX *= -1;
+
+    }
+
+
+    function keydown(event) {
+
+        if (
+            event.key === "ArrowUp"
+        ) {
+
+            playerY -= 25;
+
+        }
+
+
+        if (
+            event.key === "ArrowDown"
+        ) {
+
+            playerY += 25;
+
+        }
+
+
+        playerY =
+            Math.max(
+                0,
+                Math.min(
+                    280,
+                    playerY
+                )
+            );
+
+    }
+
+
+    document.addEventListener(
+        "keydown",
+        keydown
+    );
+
+
+    update();
+
+
+    return () => {
+
+        cancelAnimationFrame(animation);
+
+        document.removeEventListener(
+            "keydown",
+            keydown
+        );
+
+    };
+
+}
+
+
+/* =========================================
+   9. BREAKOUT
+========================================= */
+
+function gameBreakout() {
+
+    gameArea.innerHTML = `
+        <canvas id="breakoutCanvas"
+                width="600"
+                height="400"></canvas>
+    `;
+
+
+    const canvas =
+        document.getElementById("breakoutCanvas");
+
+    const ctx =
+        canvas.getContext("2d");
+
+
+    let paddleX = 250;
+
+    let ballX = 300;
+    let ballY = 350;
+
+    let dx = 4;
+    let dy = -4;
+
+    const bricks = [];
+
+    for (let row = 0; row < 4; row++) {
+
+        for (let col = 0; col < 8; col++) {
+
+            bricks.push({
+
+                x: col * 72 + 10,
+                y: row * 30 + 20,
+                alive: true
+
+            });
+
+        }
+
+    }
+
+
+    let animation;
+
+
+    function draw() {
+
+        ctx.fillStyle = "#020617";
+        ctx.fillRect(0,0,600,400);
+
+
+        ctx.fillStyle = "#8b5cf6";
+
+        bricks.forEach(brick => {
+
+            if (brick.alive) {
+
+                ctx.fillRect(
+                    brick.x,
+                    brick.y,
+                    62,
+                    20
+                );
+
+            }
+
+        });
+
+
+        ctx.fillStyle = "white";
+
+        ctx.fillRect(
+            paddleX,
+            375,
+            100,
+            10
+        );
+
+
+        ctx.beginPath();
+
+        ctx.arc(
+            ballX,
+            ballY,
+            7,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+
+    }
+
+
+    function update() {
+
+        ballX += dx;
+        ballY += dy;
+
+
+        if (
+            ballX < 0 ||
+            ballX > 600
+        ) {
+
+            dx *= -1;
+
+        }
+
+
+        if (ballY < 0) {
+
+            dy *= -1;
+
+        }
+
+
+        if (
+            ballY > 365 &&
+            ballX > paddleX &&
+            ballX < paddleX + 100
+        ) {
+
+            dy *= -1;
+
+        }
+
+
+        bricks.forEach(brick => {
+
+            if (
+                brick.alive &&
+                ballX > brick.x &&
+                ballX < brick.x + 62 &&
+                ballY > brick.y &&
+                ballY < brick.y + 20
+            ) {
+
+                brick.alive = false;
+
+                dy *= -1;
+
+            }
+
+        });
+
+
+        if (ballY > 400) {
+
+            ballX = 300;
+            ballY = 350;
+
+            dy = -4;
+
+        }
+
+
+        draw();
+
+        animation =
+            requestAnimationFrame(update);
+
+    }
+
+
+    function mouseMove(event) {
+
+        const rect =
+            canvas.getBoundingClientRect();
+
+        paddleX =
+            (event.clientX - rect.left) *
+            (600 / rect.width) -
+            50;
+
+        paddleX =
+            Math.max(
+                0,
+                Math.min(
+                    500,
+                    paddleX
+                )
+            );
+
+    }
+
+
+    canvas.addEventListener(
+        "mousemove",
+        mouseMove
+    );
+
+
+    update();
+
+
+    return () => {
+
+        cancelAnimationFrame(animation);
+
+        canvas.removeEventListener(
+            "mousemove",
+            mouseMove
+        );
+
+    };
+
+}
+
+
+/* =========================================
+   10. TETRIS MINI
+========================================= */
+
+function gameTetris() {
+
+    gameArea.innerHTML = `
+
+        <div class="big-number">
+            🟦
+        </div>
+
+        <p>
+            Mini Tetris: consigue puntos colocando bloques.
+        </p>
+
+        <button id="tetrisButton"
+                class="game-btn">
+            Soltar bloque
+        </button>
+
+        <div class="score">
+            Puntos:
+            <span id="tetrisScore">0</span>
+        </div>
+    `;
+
+
+    let score = 0;
+
+
+    document
+        .getElementById("tetrisButton")
+        .addEventListener("click", () => {
+
+            score +=
+                Math.floor(
+                    Math.random() * 100
+                ) + 50;
+
+            document.getElementById(
+                "tetrisScore"
+            ).textContent = score;
+
+        });
+
+
+    return () => {};
+
+}
+
+
+/* =========================================
+   11. ESQUIVA
+========================================= */
+
+function gameDodge() {
+
+    gameArea.innerHTML = `
+        <canvas id="dodgeCanvas"
+                width="500"
+                height="400"></canvas>
+
+        <p>Muévete con ← → y esquiva los bloques.</p>
+    `;
+
+
+    const canvas =
+        document.getElementById("dodgeCanvas");
+
+    const ctx =
+        canvas.getContext("2d");
+
+
+    let playerX = 235;
+
+    let enemyX =
+        Math.random() * 460;
+
+    let enemyY = -30;
+
+    let score = 0;
+
+    let left = false;
+    let right = false;
+
+    let animation;
+
+
+    function draw() {
+
+        ctx.fillStyle = "#020617";
+        ctx.fillRect(0,0,500,400);
+
+
+        ctx.fillStyle = "#22c55e";
+
+        ctx.fillRect(
+            playerX,
+            350,
+            30,
+            30
+        );
+
+
+        ctx.fillStyle = "#ef4444";
+
+        ctx.fillRect(
+            enemyX,
+            enemyY,
+            30,
+            30
+        );
+
+
+        ctx.fillStyle = "white";
+
+        ctx.font = "20px Arial";
+
+        ctx.fillText(
+            "Puntos: " + score,
+            15,
+            25
+        );
+
+    }
+
+
+    function update() {
+
+        if (left) playerX -= 5;
+
+        if (right) playerX += 5;
+
+
+        playerX =
+            Math.max(
+                0,
+                Math.min(
+                    470,
+                    playerX
+                )
+            );
+
+
+        enemyY += 5;
+
+
+        if (enemyY > 400) {
+
+            enemyY = -30;
+
+            enemyX =
+                Math.random() * 470;
+
+            score++;
+
+        }
+
+
+        if (
+            enemyX < playerX + 30 &&
+            enemyX + 30 > playerX &&
+            enemyY < 380 &&
+            enemyY + 30 > 350
+        ) {
+
+            alert(
+                "💥 Has perdido. Puntos: " +
+                score
+            );
+
+            enemyY = -30;
+
+            score = 0;
+
+        }
+
+
+        draw();
+
+        animation =
+            requestAnimationFrame(update);
+
+    }
+
+
+    function keydown(event) {
+
+        if (event.key === "ArrowLeft") {
+            left = true;
+        }
+
+        if (event.key === "ArrowRight") {
+            right = true;
+        }
+
+    }
+
+
+    function keyup(event) {
+
+        if (event.key === "ArrowLeft") {
+            left = false;
+        }
+
+        if (event.key === "ArrowRight") {
+            right = false;
+        }
+
+    }
+
+
+    document.addEventListener(
+        "keydown",
+        keydown
+    );
+
+    document.addEventListener(
+        "keyup",
+        keyup
+    );
+
+
+    update();
+
+
+    return () => {
+
+        cancelAnimationFrame(animation);
+
+        document.removeEventListener(
+            "keydown",
+            keydown
+        );
+
+        document.removeEventListener(
+            "keyup",
+            keyup
+        );
+
+    };
+
+}
+
+
+/* =========================================
+   12. NAVE ESPACIAL
+========================================= */
+
+function gameSpace() {
+
+    gameArea.innerHTML = `
+        <canvas id="spaceCanvas"
+                width="500"
+                height="400"></canvas>
+
+        <p>Muévete con ← → y dispara con ESPACIO.</p>
+    `;
+
+
+    const canvas =
+        document.getElementById("spaceCanvas");
+
+    const ctx =
+        canvas.getContext("2d");
+
+
+    let playerX = 235;
+
+    let bullets = [];
+
+    let enemies = [];
+
+    let score = 0;
+
+    let keys = {};
+
+    let animation;
+
+
+    for (let i = 0; i < 5; i++) {
+
+        enemies.push({
+
+            x: Math.random() * 460,
+            y: 30 + Math.random() * 120
+
+        });
+
+    }
+
+
+    function draw() {
+
+        ctx.fillStyle = "#020617";
+
+        ctx.fillRect(
+            0,
+            0,
+            500,
+            400
+        );
+
+
+        ctx.fillStyle = "white";
+
+        ctx.font = "25px Arial";
+
+        ctx.fillText(
+            "🚀",
+            playerX,
+            370
+        );
+
+
+        ctx.fillStyle = "#22d3ee";
+
+        bullets.forEach(bullet => {
+
+            ctx.fillRect(
+                bullet.x,
+                bullet.y,
+                4,
+                12
+            );
+
+        });
+
+
+        ctx.fillStyle = "#ef4444";
+
+        enemies.forEach(enemy => {
+
+            ctx.fillRect(
+                enemy.x,
+                enemy.y,
+                30,
+                25
+            );
+
+        });
+
+
+        ctx.fillStyle = "white";
+
+        ctx.font = "18px Arial";
+
+        ctx.fillText(
+            "Puntos: " + score,
+            15,
+            25
+        );
+
+    }
+
+
+    function update() {
+
+        if (keys.ArrowLeft) {
+
+            playerX -= 5;
+
+        }
+
+        if (keys.ArrowRight) {
+
+            playerX += 5;
+
+        }
+
+
+        playerX =
+            Math.max(
+                0,
+                Math.min(
+                    470,
+                    playerX
+                )
+            );
+
+
+        bullets.forEach(
+            bullet => bullet.y -= 7
+        );
+
+
+        bullets =
+            bullets.filter(
+                bullet => bullet.y > 0
+            );
+
+
+        enemies.forEach(enemy => {
+
+            enemy.y += .5;
+
+        });
+
+
+        bullets.forEach(bullet => {
+
+            enemies.forEach(enemy => {
+
+                if (
+                    bullet.x > enemy.x &&
+                    bullet.x < enemy.x + 30 &&
+                    bullet.y > enemy.y &&
+                    bullet.y < enemy.y + 25
+                ) {
+
+                    enemy.x =
+                        Math.random() * 470;
+
+                    enemy.y = 20;
+
+                    score++;
+
+                }
+
+            });
+
+        });
+
+
+        draw();
+
+        animation =
+            requestAnimationFrame(update);
+
+    }
+
+
+    function keydown(event) {
+
+        keys[event.key] = true;
+
+
+        if (event.code === "Space") {
+
+            bullets.push({
+
+                x: playerX + 13,
+                y: 350
+
+            });
+
+        }
+
+    }
+
+
+    function keyup(event) {
+
+        keys[event.key] = false;
+
+    }
+
+
+    document.addEventListener(
+        "keydown",
+        keydown
+    );
+
+    document.addEventListener(
+        "keyup",
+        keyup
+    );
+
+
+    update();
+
+
+    return () => {
+
+        cancelAnimationFrame(animation);
+
+        document.removeEventListener(
+            "keydown",
+            keydown
+        );
+
+        document.removeEventListener(
+            "keyup",
+            keyup
+        );
+
+    };
+
+}
+
+
+/* =========================================
+   13. ATRAPA ESTRELLAS
+========================================= */
+
+function gameStars() {
+
+    gameArea.innerHTML = `
+        <canvas id="starsCanvas"
+                width="500"
+                height="400"></canvas>
+
+        <p>Mueve el ratón y atrapa ⭐.</p>
+    `;
+
+
+    const canvas =
+        document.getElementById("starsCanvas");
+
+    const ctx =
+        canvas.getContext("2d");
+
+
+    let playerX = 250;
+
+    let stars = [];
+
+    let score = 0;
+
+    let animation;
+
+
+    for (let i = 0; i < 5; i++) {
+
+        stars.push({
+
+            x: Math.random() * 470,
+            y: Math.random() * 350
+
+        });
+
+    }
+
+
+    function draw() {
+
+        ctx.fillStyle = "#020617";
+
+        ctx.fillRect(
+            0,
+            0,
+            500,
+            400
+        );
+
+
+        ctx.fillStyle = "#38bdf8";
+
+        ctx.fillRect(
+            playerX - 25,
+            360,
+            50,
+            15
+        );
+
+
+        ctx.font = "25px Arial";
+
+        stars.forEach(star => {
+
+            ctx.fillText(
+                "⭐",
+                star.x,
+                star.y
+            );
+
+        });
+
+
+        ctx.fillStyle = "white";
+
+        ctx.font = "18px Arial";
+
+        ctx.fillText(
+            "Puntos: " + score,
+            15,
+            25
+        );
+
+    }
+
+
+    function update() {
+
+        stars.forEach(star => {
+
+            star.y += 2;
+
+
+            if (
+                star.y > 400
+            ) {
+
+                star.y = 0;
+
+                star.x =
+                    Math.random() * 470;
+
+            }
+
+
+            if (
+                star.y > 350 &&
+                Math.abs(
+                    star.x - playerX
+                ) < 40
+            ) {
+
+                score++;
+
+                star.y = 0;
+
+                star.x =
+                    Math.random() * 470;
+
+            }
+
+        });
+
+
+        draw();
+
+        animation =
+            requestAnimationFrame(update);
+
+    }
+
+
+    function mouseMove(event) {
+
+        const rect =
+            canvas.getBoundingClientRect();
+
+        playerX =
+            (event.clientX - rect.left) *
+            (500 / rect.width);
+
+    }
+
+
+    canvas.addEventListener(
+        "mousemove",
+        mouseMove
+    );
+
+
+    update();
+
+
+    return () => {
+
+        cancelAnimationFrame(animation);
+
+        canvas.removeEventListener(
+            "mousemove",
+            mouseMove
+        );
+
+    };
+
+}
+
+
+/* =========================================
+   14. 2048 MINI
+========================================= */
+
+function game2048() {
+
+    let score = 0;
+
+    let value = 2;
+
+
+    gameArea.innerHTML = `
+
+        <div
+            style="
+                width:220px;
+                height:220px;
+                background:#334155;
+                border-radius:15px;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                flex-direction:column;
+            "
+        >
+
+            <div
+                id="value2048"
+                style="
+                    font-size:55px;
+                    font-weight:bold;
+                "
+            >
+                2
+            </div>
+
+            <div>
+                Puntos:
+                <span id="score2048">
+                    0
+                </span>
+            </div>
+
+        </div>
+
+        <p style="margin:15px">
+            Pulsa los botones para combinar números.
+        </p>
+
+        <button id="plus2048"
+                class="game-btn">
+            ➕ Combinar
+        </button>
+
+    `;
+
+
+    document
+        .getElementById("plus2048")
+        .addEventListener("click", () => {
+
+            value *= 2;
+
+            score += value;
+
+            document.getElementById(
+                "value2048"
+            ).textContent = value;
+
+            document.getElementById(
+                "score2048"
+            ).textContent = score;
+
+        });
+
+
+    return () => {};
+
+}
+
+
+/* =========================================
+   15. TRES EN RAYA
+========================================= */
+
+function gameTTT() {
+
+    gameArea.innerHTML = `
+
+        <div class="ttt" id="tttBoard"></div>
+
+        <p id="tttMessage"
+           style="margin-top:15px">
+           Tu turno: ❌
+        </p>
+
+        <button id="tttRestart"
+                class="game-btn">
+            Reiniciar
+        </button>
+    `;
+
+
+    const board =
+        document.getElementById("tttBoard");
+
+    const message =
+        document.getElementById("tttMessage");
+
+    let cells =
+        Array(9).fill("");
+
+    let gameOver = false;
+
+
+    function render() {
+
+        board.innerHTML = "";
+
+
+        cells.forEach((value, index) => {
+
+            const button =
+                document.createElement("button");
+
+            button.textContent = value;
+
+            button.addEventListener(
+                "click",
+                () => play(index)
+            );
+
+            board.appendChild(button);
+
+        });
+
+    }
+
+
+    function checkWinner() {
+
+        const combinations = [
+
+            [0,1,2],
+            [3,4,5],
+            [6,7,8],
+
+            [0,3,6],
+            [1,4,7],
+            [2,5,8],
+
+            [0,4,8],
+            [2,4,6]
+
+        ];
+
+
+        for (
+            const combination
+            of combinations
+        ) {
+
+            const [
+                a,
+                b,
+                c
+            ] = combination;
+
+
+            if (
+                cells[a] &&
+                cells[a] === cells[b] &&
+                cells[a] === cells[c]
+            ) {
+
+                return cells[a];
+
+            }
+
+        }
+
+
+        if (
+            cells.every(cell => cell)
+        ) {
+
+            return "draw";
+
+        }
+
+
+        return null;
+
+    }
+
+
+    function play(index) {
+
+        if (
+            cells[index] ||
+            gameOver
+        ) return;
+
+
+        cells[index] = "❌";
+
+
+        let result =
+            checkWinner();
+
+
+        if (result) {
+
+            finish(result);
+
+            return;
+
+        }
+
+
+        // Movimiento sencillo de la máquina
+
+        const empty =
+            cells
+                .map((v,i) => v ? null : i)
+                .filter(v => v !== null);
+
+
+        if (empty.length) {
+
+            const random =
+                empty[
+                    Math.floor(
+                        Math.random() *
+                        empty.length
+                    )
+                ];
+
+            cells[random] = "⭕";
+
+        }
+
+
+        result =
+            checkWinner();
+
+
+        if (result) {
+
+            finish(result);
+
+            return;
+
+        }
+
+
+        message.textContent =
+            "Tu turno: ❌";
+
+        render();
+
+    }
+
+
+    function finish(result) {
+
+        gameOver = true;
+
+        render();
+
+
+        if (result === "draw") {
+
+            message.textContent =
+                "🤝 Empate";
+
+        } else if (result === "❌") {
+
+            message.textContent =
+                "🏆 ¡Has ganado!";
+
+        } else {
+
+            message.textContent =
+                "🤖 Ha ganado la máquina.";
+
+        }
+
+    }
+
+
+    document
+        .getElementById("tttRestart")
+        .addEventListener("click", () => {
+
+            cells = Array(9).fill("");
+
+            gameOver = false;
+
+            message.textContent =
+                "Tu turno: ❌";
+
+            render();
+
+        });
+
+
+    render();
+
+
+    return () => {};
+
+}
+
+
+/* =========================================
+   INICIO
+========================================= */
+
+renderGames();
+
+</script>
 
 </body>
 </html>
