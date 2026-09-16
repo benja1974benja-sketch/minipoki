@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MiniPoki</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="logo">🎮 MiniPoki</div>
+
+  <input
+    id="search"
+    type="text"
+    placeholder="Buscar juegos..."
+    autocomplete="off"
+  >
+</header>
+
+<nav>
+  <button class="category active" data-category="all">Todos</button>
+  <button class="category" data-category="arcade">Arcade</button>
+  <button class="category" data-category="puzzle">Puzzle</button>
+  <button class="category" data-category="sports">Deportes</button>
+  <button class="category" data-category="favorites">⭐ Favoritos</button>
+</nav>
+
+<main>
+  <h1>Juegos</h1>
+  <div id="games" class="games"></div>
+</main>
+
+<div id="gameModal" class="modal hidden">
+  <div class="modal-content">
+    <button id="closeGame" class="close">✕</button>
+    <h2 id="gameTitle"></h2>
+    <div id="gameArea"></div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
